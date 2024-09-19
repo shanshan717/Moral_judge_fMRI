@@ -69,21 +69,26 @@ emmeans_df <- as.data.frame(emmeans_result)
 # 查看数据框结构（可选）
 head(emmeans_df)
 
+# 确保 group 列是因子类型，并包含正确的标签
+emmeans_df$group <- factor(emmeans_df$group, levels = c("group1", "group2"))
+
 # 使用 ggplot 进行可视化 (bar + error bar)
 interaction_plot <- ggplot(emmeans_df, aes(x = trial_type, y = emmean, fill = group)) +
   geom_bar(stat = "identity", position = "dodge", color = "black", width = 0.7) +
   geom_errorbar(aes(ymin = emmean - SE, ymax = emmean + SE), 
                 position = position_dodge(0.7), width = 0.2) +
-  labs(x = "trial_type", 
-       y = "Estimated Marginal Means", 
+  labs(x = "Trial Type", 
+       y = "Mean Reaction Time (s)",  # 修改 Y 轴标题
        fill = "Group") +
+  scale_fill_manual(values = c("#F8766D", "#00BFC4"),  # 确保提供足够的颜色
+                    labels = c("judges", "controls")) +  # 修改图例标签
   theme(
     plot.margin = unit(c(1, 1, 1, 1), "cm"),
     panel.background = element_blank(),
     plot.title = element_text(size = 14, hjust = 0.5, margin = margin(b = 15)),
     axis.line = element_line(color = "black"),
-    axis.title.x = element_text(size = 12, color = "black"), # 调整 X 轴标题字体，去掉加粗
-    axis.title.y = element_text(size = 12, color = "black", margin = margin(r = 10)), # 调整 Y 轴标题字体，去掉加粗
+    axis.title.x = element_text(size = 12, color = "black"),  
+    axis.title.y = element_text(size = 12, color = "black", margin = margin(r = 10)),  
     axis.text = element_text(size = 12, color = "black"),
     axis.text.x = element_text(margin = margin(t = 10)),
     axis.text.y = element_text(size = 12),
